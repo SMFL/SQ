@@ -13,16 +13,15 @@ namespace SQ
 
     public class Player : Sprite
     {
-   
-
         #region PlayerVariables
         int MovementSpeed;
-
         int WidthGapBetweenFrame;
         int HeightGapBetweenFrame;
-        Vector2 PositionOnGrid;
+        public Vector2 PositionOnGrid;
         Vector2 GridPositionOffset;
+        int ProperGridPosition;
         bool Moving;
+        bool Left = true, Right = true, Up = true, Down = true;
         #endregion
 
         #region PlayerSpecificFunctions
@@ -44,7 +43,24 @@ namespace SQ
             WidthGapBetweenFrame = widthGapBetweenFrame;
             HeightGapBetweenFrame = heightGapBetweenFrame;
         }
-       
+
+        public void setMovementBools(bool up, bool left, bool right, bool down)
+        {
+            Up = up;
+            Down = down;
+            Left = left;
+            Right = right;
+        }
+        
+        public bool getMovingBool()
+        {
+            return Moving;
+        }
+
+        public int getProperGridPosition()
+        {
+            return ProperGridPosition;
+        }
         public override void Animation(GameTime gameTime)
         {
             base.Animation(gameTime);
@@ -63,6 +79,11 @@ namespace SQ
             }
            
         }
+
+        public void setProperGridPosition(int numberOfIntsOnRow)
+        {
+            ProperGridPosition = (int)PositionOnGrid.X + ((int)PositionOnGrid.Y * numberOfIntsOnRow);
+        }
         #endregion
 
         #region BaseFunctions(UPDATE,DRAW)
@@ -73,31 +94,44 @@ namespace SQ
             KeyboardState KB = Keyboard.GetState();
             if (KB.IsKeyDown(Keys.W) && Moving == false)
             {
-                PositionOnGrid.Y -= 1;
+
                 SourceRectangle.Y = SourceRectangle.Height;
-                Moving = true;
+                if (Up == true)
+                {
+                    PositionOnGrid.Y -= 1;
+                    Moving = true;
+                }
                 
             }
             if (KB.IsKeyDown(Keys.S) && Moving == false)
             {
-                PositionOnGrid.Y += 1;
+
                 SourceRectangle.Y = 0;
-                Moving = true;
+                if (Down == true)
+                {
+                    PositionOnGrid.Y += 1;
+                    Moving = true;
+                }
                 
             }
             if (KB.IsKeyDown(Keys.A) && Moving == false)
             {
-                PositionOnGrid.X -= 1;
                 SourceRectangle.Y = SourceRectangle.Height * 2;
-                Moving = true;
+                if (Left == true)
+                {
+                    Moving = true;
+                    PositionOnGrid.X -= 1;
+                }
 
             }
             if(KB.IsKeyDown(Keys.D) && Moving == false)
             {
-                PositionOnGrid.X += 1;
                 SourceRectangle.Y = SourceRectangle.Height * 3;
-                Moving = true;
-
+                if (Right == true)
+                {
+                    Moving = true;
+                    PositionOnGrid.X += 1;
+                }
             }
 
             if (Moving)
@@ -130,8 +164,6 @@ namespace SQ
             {
                 SourceRectangle.X = 0;
             }
-
-            
         }
 
         public override void Draw(SpriteBatch spriteBatch)
@@ -141,7 +173,4 @@ namespace SQ
         }
         #endregion
     }
-
-
-
 }
